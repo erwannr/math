@@ -1,0 +1,138 @@
+\documentclass{article} % or:
+\usepackage{amsmath, commath, amsthm, amssymb}
+\usepackage[english]{babel}
+\usepackage[style=numeric, maxnames=999, backend=biber]{biblatex}
+%\usepackage{ccool}
+\usepackage{/home/er/src/rogard/ccool/erw-l3}
+\usepackage{/home/er/src/rogard/ccool/ccool}
+\usepackage{csquotes}
+\usepackage[inline]{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{datetime2}
+\DTMsetup{datesep=/,style=mmddyyyy}
+\usepackage[T1]{fontenc}
+%\begin{filecontents}{\jobname.bib}
+%@misc{ccool,
+%        author = {Erwann Rogard},
+%        title = {The \texttt{ccool} package},
+%        year = {2020},
+%        url = {https://github.com/rogard/ccool}
+%}
+%@misc{llncs, 
+%       author = {Springer},
+%       title={LLNCS LaTeX2e class}, 
+%       url = {https://www.springer.com/gp/computer-science/lncs/conference-proceedings-guidelines}
+%}
+%\end{filecontents}
+%\addbibresource{\jobname.bib}
+\usepackage{tcolorbox}
+
+\newtheorem{result}{Result}
+\AfterEndEnvironment{result}{\CcoolHook}
+\newtheorem{definition}{Definition}
+\AfterEndEnvironment{definition}{\CcoolHook}
+
+% <Workaround for llncs>
+% https://tex.stackexchange.com/questions/538249/test-for-class-llncs/538270#538270
+% https://tex.stackexchange.com/questions/43835/conflict-between-amsthm-and-some-other-package
+\usepackage{xparse}
+\usepackage{hyperref}
+
+%\listfiles
+
+\title{Cheatsheet on arithmetic}
+
+\author{Erwann Rogard}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}Hints rather than complete proofs. Since these are common, by default no source.
+\end{abstract}
+
+\vspace*{\fill}
+
+\tableofcontents
+
+\vspace*{\fill}
+
+\clearpage
+
+\Ccool
+{
+  SuchThat = { ;~ },
+  EvalAt = \CcoolLambda{(#1)},
+  Set = \CcoolLambda{\{#1\}},
+  SetSuchThat = \CcoolLambda[mm]{\Set{#1 \SuchThat #2}},
+  Pos = \CcoolLambda{#1^{+}},
+  NonZero = \CcoolLambda{#1^{*}},
+  DefSymb = \doteq,
+  Def = \CcoolLambda[mm]{#1\DefSymb#2},
+  LinComb = \CcoolLambda[mmmm]{#1\times #2+#3\times #4},
+  Abs = \CcoolLambda{\lvert#1\rvert},
+  Iff = {if and only if~},
+  Exists = {there exists~}
+}[]
+c{ \mathbb{#1} }{ Nat = N, Int = Z }
+
+\Ccool
+{
+  GcdSymb = \operatorname{gcd},
+  Gcd = \CcoolLambda[mm]{\GcdSymb\EvalAt{#1, #2}}
+}
+
+\newlist{inlsteps}{enumerate*}{1}
+%\setlist[steps]{resume,leftmargin=*,label=(\arabic*)}
+\setlist[inlsteps]{label=\emph{\roman*)}}
+
+\section{Bézout and derivatives}
+
+\begin{result}[Bézout identity]\label{bezout:id}
+  Let $a,b\in \Pos{\Nat}$, and $c=\Gcd{a}{b}$, then \Exists $u,v\in \NonZero{\Int}$ such that $c=\LinComb{a}{u}{b}{v}$. 
+%  and $L=\SetSuchThat{a\times{}u+b\times{}v}{TEST}$
+%  Let \Ccool{ TheGcd = \SetSuchThat{} }
+%  
+%  $\GcdAt{a}{b}$
+\end{result}
+\begin{proof}
+  Trivially, 
+  \begin{inlsteps}
+  \item $\Pos{L}\neq\emptyset$, 
+  \end{inlsteps} thus admits a minimum by the well ordering principle.
+  \begin{inlsteps}[resume]
+  \item $c$ divides $a$ and $b$, thus divides $d$, and $c\leq d$
+    \label{bezout:id:leq}
+  \end{inlsteps}. But also,
+  \begin{inlsteps}[resume]
+  \item $d$ divides $a$, as assuming otherwise leads to a contradiction. 
+  \end{inlsteps} And, by symmetry,
+  \begin{inlsteps}[resume]
+  \item $d$ divides $b$.~
+  \end{inlsteps}Altogether,~
+  \begin{inlsteps}[resume]
+  \item $d$ divides $c$, and $d\leq c$.~
+    \label{bezout:id:geq}
+  \end{inlsteps}In all, $d=c$.
+\end{proof}
+
+\begin{result}[Mutually primes]\label{bezout:primes}
+  $a,b\in \Pos{\Nat}$ are mutually primes \Iff \Exists
+  $u,v\in \Int$ $\LinComb{a}{u}{b}{v}=1$
+\end{result}\begin{proof}Follows from \autoref{bezout:id}\end{proof}
+
+\begin{result}[Gauss' lemma]\label{bezout:primes}
+  $a,b,c\in \Pos{\Nat}$ and $a$ divides $b\times c$,
+  and $a$ and $b$ are mutually primes, then $a$ divides $c$.
+\end{result}\begin{proof}Follows from \autoref{bezout:id} and \autoref{bezout:primes}
+  % (1) b\times{}c = a\times{}p
+  % (2)\LinComb{a}{u}{b}{v}=1
+  % Multiply (2) by c, and plug in (1)..
+\end{proof}
+
+%\phantomsection
+%\addcontentsline{toc}{section}{References}
+%\printbibliography[heading=subbibliography]
+\end{document}
+
